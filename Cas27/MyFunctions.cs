@@ -8,9 +8,5 @@ namespace Cas27
 {
     class MyFunctions
     {
-        public static void Wait(int WaitTime)
-        {
-            System.Threading.Thread.Sleep(WaitTime);
-        }
     }
 }
