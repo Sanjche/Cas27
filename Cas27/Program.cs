@@ -10,6 +10,7 @@ namespace Cas27
     {
         static void Main(string[] args)
         {
+            BaseTest test = new BaseTest();
         }
     }
 }
