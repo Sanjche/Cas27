@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Cas27.Lib;
 
 namespace Cas27
@@ -8,6 +9,7 @@ namespace Cas27
     {
 
         protected IWebDriver driver;
+        protected WebDriverWait wait;
 
         protected void GoToURL(string url)
         {
@@ -28,7 +30,33 @@ namespace Cas27
                 Logger.log("ERROR", $"Can't find element: <{Selector}>");
             }
 
-            Logger.log("INFO", $"Element: <{Selector}> found.");
+            if (ReturnElement != null)
+            {
+                Logger.log("INFO", $"Element: <{Selector}> found.");
+            }
+
+
+            return ReturnElement;
+        }
+
+        protected IWebElement WaitForElement(Func<IWebDriver, IWebElement> ExpectedConditions)
+        {
+            IWebElement ReturnElement = null;
+            Logger.log("INFO", $"Waiting for element.");
+            try
+            {
+                ReturnElement = this.wait.Until(ExpectedConditions);
+
+            }
+            catch (WebDriverTimeoutException)
+            {
+                Logger.log("ERROR", $"Can't wait for element.");
+            }
+
+            if (ReturnElement != null)
+            {
+                Logger.log("INFO", $"Element found.");
+            }
 
             return ReturnElement;
         }

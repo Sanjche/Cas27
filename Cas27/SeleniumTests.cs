@@ -3,6 +3,8 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Support.UI;
+using EC = SeleniumExtras.WaitHelpers.ExpectedConditions;
 using Cas27.Lib;
 using System.Diagnostics;
 
@@ -17,6 +19,7 @@ namespace Cas27
             Logger.setFileName(@"C:\Kurs\SeleniumTests.log");
             this.driver = new ChromeDriver();
             this.driver.Manage().Window.Maximize();
+            this.wait = new WebDriverWait(this.driver, new TimeSpan(0, 0, 10));
         }
 
         [TearDown]
@@ -32,23 +35,27 @@ namespace Cas27
             Logger.beginTest("TestGoogleSearch");
             Logger.log("INFO", "Starting test.");
 
-            this.ExplicitWait(500);
             this.GoToURL("https://www.google.com/");
 
             IWebElement SearchField = this.MyFindElement(By.Name("q"));
             SearchField.SendKeys("Selenium automation with C#");
 
-            this.ExplicitWait(500);
+            IWebElement SearchButton = this.WaitForElement(
+                EC.ElementToBeClickable(By.XPath("//input[@name='btnK']"))
+            );
+            
+            SearchButton?.Click();
+            /*
+             * ? menja ovaj if:
+             * 
+             * if (SearchButton != null)
+             * {
+             *     SearchButton.Click();
+             * }
+            */
 
-            IWebElement SearchButton = this.MyFindElement(By.Name("btnK"));
-            SearchButton.Click();
-
-            this.ExplicitWait(500);
-
-            IWebElement ChangeToEnglishLink = this.MyFindElement(By.PartialLinkText("to English"));
-            ChangeToEnglishLink.Click();
-
-            this.ExplicitWait(2000);
+            IWebElement ChangeToEnglishLink = this.MyFindElement(By.XPath("//a[contains(., 'to English')]"));
+            ChangeToEnglishLink?.Click();
 
             IWebElement Body = this.MyFindElement(By.TagName("body"));
             bool containsVideos = Body.Text.Contains("Videos");
