@@ -1,6 +1,7 @@
 ﻿using System;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using EC = SeleniumExtras.WaitHelpers.ExpectedConditions;
 using Cas27.Lib;
 
 namespace Cas27
@@ -59,6 +60,22 @@ namespace Cas27
             }
 
             return ReturnElement;
+        }
+
+        protected bool ElementExists(By Selector)
+        {
+            IWebElement ReturnElement = null;
+            try
+            {
+                ReturnElement = this.wait.Until(EC.ElementExists(Selector));
+            }
+            catch (WebDriverTimeoutException)
+            {
+                Logger.log("ERROR", $"Can't wait for element.");
+            }
+
+            return ReturnElement != null;
+
         }
 
         protected void ExplicitWait(int waitTime)
