@@ -36,7 +36,6 @@ namespace Cas27
                 Logger.log("INFO", $"Element: <{Selector}> found.");
             }
 
-
             return ReturnElement;
         }
 
@@ -75,7 +74,15 @@ namespace Cas27
             }
 
             return ReturnElement != null;
+        }
 
+        public void PopulateInput(By Selector, String TextToType)
+        {
+            Logger.log("INFO", $"Populate input element: <{Selector}> = '{TextToType}'");
+
+            // this.MyFindElement(Selector).SendKeys(TextToType);
+            IWebElement inputElement = this.MyFindElement(Selector);
+            inputElement.SendKeys(TextToType);
         }
 
         protected void ExplicitWait(int waitTime)

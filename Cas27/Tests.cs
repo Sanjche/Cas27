@@ -5,6 +5,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using EC = SeleniumExtras.WaitHelpers.ExpectedConditions;
 using Cas27.Lib;
+using System.Collections.ObjectModel;
 
 namespace Cas27
 {
@@ -72,6 +73,9 @@ namespace Cas27
         [Category("shop.qa.rs")]
         public void TestAddToCart()
         {
+            string PackageName = "pro";
+            string PackageQuantity = "5";
+
             Logger.beginTest("TestAddToCart");
             Logger.log("INFO", "Starting test.");
 
@@ -79,16 +83,16 @@ namespace Cas27
 
             IWebElement dropdown = this.MyFindElement(
                 By.XPath(
-                    "//div//h3[contains(text(), 'starter')]//ancestor::div[contains(@class, 'panel')]//select"
+                    $"//div//h3[contains(text(), '{PackageName}')]//ancestor::div[contains(@class, 'panel')]//select"
                 )
             );
 
             SelectElement select = new SelectElement(dropdown);
-            select.SelectByValue("7");
+            select.SelectByValue(PackageQuantity);
 
             IWebElement orderButton = this.MyFindElement(
                 By.XPath(
-                    "//div//h3[contains(text(), 'starter')]//ancestor::div[contains(@class, 'panel')]//input[@type='submit']"
+                    $"//div//h3[contains(text(), '{PackageName}')]//ancestor::div[contains(@class, 'panel')]//input[@type='submit']"
                 )
             );
 
@@ -96,7 +100,61 @@ namespace Cas27
 
             // domaci ispod ove linije ----------
 
+            this.WaitForElement(
+                EC.ElementIsVisible(
+                    By.XPath("//h1[contains(., 'Order #')]")
+                )
+            );
+
+            Assert.AreEqual(this.driver.Url, "http://shop.qa.rs/order");
+
+            ReadOnlyCollection<IWebElement> redovi = this.driver.FindElements(
+                By.XPath(
+                    $"//tr//td[contains(text(), '{PackageName.ToUpper()}')]//parent::tr//td[contains(text(), '{PackageQuantity}')]//parent::tr"
+                )
+            );
+
+            Assert.GreaterOrEqual(redovi.Count, 1);
+
             Logger.endTest();
+        }
+
+        [Test]
+        [Category("shop.qa.rs")]
+        public void TestRegister()
+        {
+            Logger.beginTest("TestRegister");
+            Logger.log("INFO", "Starting test.");
+
+            this.GoToURL("http://shop.qa.rs/");
+
+            IWebElement registerLink = this.WaitForElement(EC.ElementToBeClickable(By.LinkText("Register")));
+            registerLink?.Click();
+
+            Assert.AreEqual(this.driver.Url, "http://shop.qa.rs/register");
+
+            this.PopulateInput(By.Name("ime"), "TestIme");
+
+            this.PopulateInput(By.Name("prezime"), "TestPrezime");
+
+            this.PopulateInput(By.Name("email"), "test@email.local");
+
+            this.PopulateInput(By.Name("korisnicko"), "testime");
+
+            this.PopulateInput(By.Name("lozinka"), "nekajakasifra");
+
+            this.PopulateInput(By.Name("lozinkaOpet"), "nekajakasifra");
+
+            IWebElement registerButton = this.MyFindElement(By.Name("register"));
+            registerButton?.Click();
+
+            IWebElement alertDiv = this.WaitForElement(
+                EC.ElementIsVisible(
+                    By.XPath("//div[contains(@class, 'alert-success')]")
+                )
+            );
+
+            Assert.IsTrue(alertDiv.Displayed);
         }
 
         public bool Login(string Username, string Password)
