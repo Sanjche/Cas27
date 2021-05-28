@@ -71,12 +71,12 @@ namespace Cas27
 
         [Test]
         [Category("shop.qa.rs")]
-        public void TestAddToCart()
+        public void TestAddToCartAndCheckout()
         {
             string PackageName = "pro";
             string PackageQuantity = "5";
 
-            Logger.beginTest("TestAddToCart");
+            Logger.beginTest("TestAddToCartAndCheckout");
             Logger.log("INFO", "Starting test.");
 
             Assert.IsTrue(Login("aaa", "aaa"));
@@ -115,6 +115,33 @@ namespace Cas27
             );
 
             Assert.GreaterOrEqual(redovi.Count, 1);
+
+            IWebElement totalColumn = this.MyFindElement(By.XPath("//td[contains(., 'Total:')]"));
+
+            string cartTotal = totalColumn.Text.Substring(7);
+            //string cartTotal = totalColumn.Text.Replace("Total: ", "");
+
+            Logger.log("INFO", $"Cart price is: {cartTotal}");
+
+            //
+
+            IWebElement checkoutButton = this.MyFindElement(By.Name("checkout"));
+            checkoutButton?.Click();
+
+            IWebElement checkoutSuccess = this.WaitForElement(
+                EC.ElementIsVisible(
+                    By.XPath("//h2[contains(., 'Order #')]")
+                )
+            );
+
+            Assert.IsTrue(checkoutSuccess.Displayed);
+
+            IWebElement h3charged = this.MyFindElement(By.XPath("//h3[contains(., 'Your credit card has been charged')]"));
+            
+            string cardCharged = h3charged.Text.Substring(h3charged.Text.IndexOf("$"));
+            Logger.log("INFO", $"Card charged: {cardCharged}");
+
+            Assert.AreEqual(cartTotal, cardCharged);
 
             Logger.endTest();
         }
@@ -155,6 +182,75 @@ namespace Cas27
             );
 
             Assert.IsTrue(alertDiv.Displayed);
+
+            Logger.endTest();
+        }
+
+        [Test]
+        [Category("shop.qa.rs")]
+        public void TestLogout()
+        {
+            Logger.beginTest("TestLogout");
+            Logger.log("INFO", "Starting test.");
+
+            Assert.IsTrue(Login("aaa", "aaa"));
+
+            IWebElement logout = this.MyFindElement(By.XPath("//a[contains(., 'Logout')]"));
+
+            Assert.IsTrue(logout.Displayed);
+            logout.Click();
+
+            IWebElement login = this.WaitForElement(
+                EC.ElementIsVisible(
+                    By.LinkText("Login")
+                )
+            );
+
+            Assert.IsTrue(login.Displayed);
+
+            Logger.endTest();
+        }
+
+        [Test]
+        [Category("shop.qa.rs")]
+        public void TestSignin()
+        {
+            Logger.beginTest("TestSignin");
+            Logger.log("INFO", "Starting test.");
+
+            this.GoToURL("http://shop.qa.rs/");
+
+            IWebElement signin = this.MyFindElement(By.LinkText("Sign in"));
+            signin.Click();
+
+            this.WaitForElement(
+                EC.ElementIsVisible(
+                    By.XPath("//h2[contains(text(),'Prijava')]")
+                )
+            );
+
+            Logger.endTest();
+        }
+
+
+        [Test]
+        [Category("playground")]
+        public void TestStringPlayground()
+        {
+            Logger.beginTest("TestStringPlayground");
+            Logger.log("INFO", "Starting test.");
+
+            this.GoToURL("http://shop.qa.rs/");
+
+            IWebElement text = this.MyFindElement(By.XPath("//h3[contains(., 'BUGS')]"));
+
+            int stringStart = 6;
+            int length = 0;
+            length = (text.Text.IndexOf(" ", stringStart) - stringStart);
+            string your = text.Text.Substring(stringStart, length);
+
+            Logger.log("INFO", $"Value of your: {your}");
+
         }
 
         public bool Login(string Username, string Password)
