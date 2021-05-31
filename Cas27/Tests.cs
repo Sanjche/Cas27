@@ -136,12 +136,44 @@ namespace Cas27
 
             Assert.IsTrue(checkoutSuccess.Displayed);
 
+            int OrderNumberStart = checkoutSuccess.Text.IndexOf("#");
+            int OrderNumberEnd = checkoutSuccess.Text.IndexOf(")", OrderNumberStart);
+            int OrderNumberLength = OrderNumberEnd - OrderNumberStart;
+            string OrderNumber = checkoutSuccess.Text.Substring(OrderNumberStart, OrderNumberLength);
+            Logger.log("INFO", $"Order number = {OrderNumber}");
+
             IWebElement h3charged = this.MyFindElement(By.XPath("//h3[contains(., 'Your credit card has been charged')]"));
             
             string cardCharged = h3charged.Text.Substring(h3charged.Text.IndexOf("$"));
             Logger.log("INFO", $"Card charged: {cardCharged}");
 
             Assert.AreEqual(cartTotal, cardCharged);
+
+            IWebElement historyLink = this.MyFindElement(By.LinkText("Order history"));
+
+            Assert.IsTrue(historyLink.Displayed);
+            historyLink.Click();
+
+            string orderRowXpath = $"//tr[contains(., '{OrderNumber}')]";
+
+            IWebElement HistoryOrderTotal = this.MyFindElement(
+                By.XPath(orderRowXpath + "/td[@class='total']")
+            );
+
+            IWebElement HistoryOrderStatus = this.MyFindElement(
+                By.XPath(orderRowXpath + "/td[@class='status']")
+            );
+
+            Logger.log("INFO", $"History order total = {HistoryOrderTotal.Text}");
+            Logger.log("INFO", $"History order status = {HistoryOrderStatus.Text}");
+
+            Assert.AreEqual("Ordered", HistoryOrderStatus.Text);
+
+            int HistoryOrderTotalInt = Convert.ToInt32(HistoryOrderTotal.Text.Replace(".00", ""));
+            string HistoryOrderTotalCompat = "$" + HistoryOrderTotalInt.ToString();
+            Logger.log("INFO", $"History order total compatible = {HistoryOrderTotalCompat}");
+
+            Assert.AreEqual(HistoryOrderTotalCompat, cardCharged);
 
             Logger.endTest();
         }
@@ -221,13 +253,17 @@ namespace Cas27
             this.GoToURL("http://shop.qa.rs/");
 
             IWebElement signin = this.MyFindElement(By.LinkText("Sign in"));
+
+            Assert.IsTrue(signin.Displayed);
             signin.Click();
 
-            this.WaitForElement(
+            IWebElement prijava = this.WaitForElement(
                 EC.ElementIsVisible(
                     By.XPath("//h2[contains(text(),'Prijava')]")
                 )
             );
+
+            Assert.IsTrue(prijava.Displayed);
 
             Logger.endTest();
         }
