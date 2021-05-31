@@ -63,6 +63,7 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="Lib\Logger.cs" />
     <Compile Include="MyFunctions.cs" />
+    <Compile Include="PractiseTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SeleniumTests.cs" />
