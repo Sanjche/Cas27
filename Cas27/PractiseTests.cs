@@ -96,10 +96,10 @@ namespace Cas27
             Assert.IsTrue(prijava.Displayed);
 
             IWebElement username = this.MyFindElement(By.Name("username"));
-            this.PopulateInput(By.Name("username"), "sss");
+            this.PopulateInput(By.Name("username"), "aaa");
 
             IWebElement passvord = this.MyFindElement(By.Name("password"));
-            this.PopulateInput(By.Name("password"), "sss");
+            this.PopulateInput(By.Name("password"), "aaa");
 
             IWebElement loginbtn = this.MyFindElement(By.Name("login"));
             loginbtn.Click();
@@ -107,6 +107,8 @@ namespace Cas27
             IWebElement greetingmsg = this.WaitForElement(EC.ElementIsVisible(By.XPath("//div/h2[contains(text(),'Welcome back')]")));
 
             Logger.log("INFO", "Welcome message is displyed");
+
+            ExplicitWait(100);
 
             Assert.IsTrue(greetingmsg.Displayed);
 
@@ -204,13 +206,24 @@ namespace Cas27
             //domaći za 32 cas
 
             IWebElement chartN = this.WaitForElement(EC.ElementIsVisible(By.XPath("//h2[contains(text(), 'You have successfully placed')]")));
-            string chartNumber = chartN.Text.Substring(chartN.Text.IndexOf("#"));
+           
+
+            int chartNuberStart = chartN.Text.IndexOf("#");
+            int chartNumberEnd = chartN.Text.IndexOf(")", chartNuberStart);
+            int chartNumberLenght = chartNumberEnd - chartNuberStart;
+            string chartNumber = chartN.Text.Substring(chartNuberStart, chartNumberLenght);
 
 
 
+            IWebElement chartP = this.MyFindElement(By.XPath("//h3[contains(.,'Your credit card has been charged')]"));
 
-            IWebElement chartP = this.MyFindElement(By.XPath("//h3[contains(text(),'Your credit card has been charged')]"));
-            string chartPrice = chartP.Text.Substring(chartP.Text.IndexOf("$"));
+
+
+           
+            
+            string chartPri = chartP.Text.Substring(chartP.Text.IndexOf("$"));
+
+            string chartPrice = chartPri.Replace("$", ""); 
 
             Logger.log("INFO", $"{chartNumber}");
             Logger.log("INFO", $"{chartPrice}");
@@ -221,21 +234,29 @@ namespace Cas27
             IWebElement orderN = this.WaitForElement(EC.ElementIsVisible(By.XPath("//tr/td[contains(text(), '#')]")));
             string orderNumber = orderN.Text.Substring(orderN.Text.IndexOf("#"));
 
+            
+
             Logger.log("INFO", $"{orderNumber}");
 
             Assert.AreEqual(chartNumber, orderNumber);
 
-
-
-            IWebElement orderP = this.WaitForElement(EC.ElementIsVisible(By.XPath("//tr//td[@class='total']")));
-
-
-
-            Logger.log("INFO", $"{orderP}");
+            string orderNum = $"{orderNumber}";
 
 
 
+            IWebElement orderP = this.WaitForElement(EC.ElementIsVisible(By.XPath($"//tr[contains(.,'{orderNum}')]/td[@class= 'total']")));
 
+            string orderPri = orderP.Text.Substring(0);
+
+            string orderPrice = orderPri.Replace(".00", "");
+
+
+
+            Logger.log("INFO",  $" cena je = {orderPrice}");
+
+
+
+            Assert.AreEqual(chartPrice, orderPrice);
 
 
             Logger.endTest();
