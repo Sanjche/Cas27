@@ -63,7 +63,10 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="Lib\Logger.cs" />
     <Compile Include="MyFunctions.cs" />
+    <Compile Include="PageObjects\BasePage.cs" />
     <Compile Include="PageObjects\HomePage.cs" />
+    <Compile Include="PageObjects\LoginPage.cs" />
+    <Compile Include="PageObjects\RegisterPage.cs" />
     <Compile Include="POMTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
