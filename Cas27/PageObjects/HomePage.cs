@@ -9,7 +9,7 @@ namespace Cas27.PageObjects
 
         public HomePage(IWebDriver driver) : base(driver) { }
 
-        public IWebElement labelQAShop
+        private IWebElement labelQAShop
         {
             get
             {
@@ -17,7 +17,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement linkLogin
+        private IWebElement linkLogin
         {
             get
             {
@@ -25,7 +25,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement linkRegister
+        private IWebElement linkRegister
         {
             get
             {
@@ -33,7 +33,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement linkLogout
+        private IWebElement linkLogout
         {
             get
             {
@@ -41,7 +41,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement linkViewCart
+        private IWebElement linkViewCart
         {
             get
             {
@@ -49,7 +49,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement alertSuccess
+        private IWebElement alertSuccess
         {
             get
             {
@@ -90,5 +90,27 @@ namespace Cas27.PageObjects
         {
             return this.alertSuccess.Displayed;
         }
+
+        public LoginPage ClickOnLogin()
+        {
+            this.linkLogin.Click();
+            this.WaitForElementToBeVisible(By.XPath("//h2[text()='Prijava']"));
+            this.ExplicitWait(250);
+            return new LoginPage(this.driver);
+        }
+
+        public RegisterPage ClickOnRegister()
+        {
+            this.linkRegister.Click();
+            this.WaitForElementToExist(By.Name("registrationForm"));
+            this.ExplicitWait(250);
+            return new RegisterPage(this.driver);
+        }
+
+        public bool IsPageDisplayed()
+        {
+            return this.labelQAShop.Displayed;
+        }
+
     }
 }

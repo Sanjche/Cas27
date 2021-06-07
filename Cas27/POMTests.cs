@@ -34,7 +34,7 @@ namespace Cas27
             HomePage pomHomePage = new HomePage(this.driver);
             pomHomePage.GoToPage();
 
-            Assert.IsTrue(pomHomePage.labelQAShop.Displayed);
+            Assert.IsTrue(pomHomePage.IsPageDisplayed());
         }
 
         [Test]
@@ -42,17 +42,16 @@ namespace Cas27
         public void TestLogin()
         {
             HomePage pomHomePage = new HomePage(this.driver);
-            LoginPage pomLoginPage = new LoginPage(this.driver);
 
             pomHomePage.GoToPage();
-            pomHomePage.linkLogin.Click();
 
-            Assert.IsTrue(pomLoginPage.labelPrijava.Displayed);
-            this.ExplicitWait(100);
+            LoginPage pomLoginPage = pomHomePage.ClickOnLogin();
 
-            pomLoginPage.inputUsername.SendKeys("aaa");
-            pomLoginPage.inputPassword.SendKeys("aaa");
-            pomLoginPage.buttonLogin.Click();
+            Assert.IsTrue(pomLoginPage.IsPageDisplayed());
+
+            pomLoginPage.EnterUsername("aaa");
+            pomLoginPage.EnterPassword("aaa");
+            pomHomePage = pomLoginPage.ClickOnLoginButton();
 
             Assert.IsTrue(pomHomePage.IsUserLoggedIn());
         }
@@ -62,20 +61,17 @@ namespace Cas27
         public void TestRegistration()
         {
             HomePage pomHomePage = new HomePage(this.driver);
-            RegisterPage pomRegisterPage = new RegisterPage(this.driver);
 
             pomHomePage.GoToPage();
-            pomHomePage.linkRegister.Click();
-
-            this.ExplicitWait(100);
+            RegisterPage pomRegisterPage = pomHomePage.ClickOnRegister();
 
             pomRegisterPage.EnterFirstName("Test Ime");
-            pomRegisterPage.inputLastName.SendKeys("Test Prezime");
-            pomRegisterPage.inputEmail.SendKeys("Test@Email.local");
-            pomRegisterPage.inputUsername.SendKeys("TestKorisnickoIme");
-            pomRegisterPage.inputPassword.SendKeys("TestLozinka");
-            pomRegisterPage.inputPasswordRepeat.SendKeys("TestLozinka");
-            pomRegisterPage.buttonRegister.Click();
+            pomRegisterPage.EnterLastName("Test Prezime");
+            pomRegisterPage.EnterEmail("Test@Email.local");
+            pomRegisterPage.EnterUsername("TestKorisnickoIme");
+            pomRegisterPage.EnterPassword("TestLozinka");
+            pomRegisterPage.EnterPasswordAgain("TestLozinka");
+            pomHomePage = pomRegisterPage.ClickOnRegisterButton();
 
             Assert.IsTrue(pomHomePage.IsAlertSuccessVisible());
         }
@@ -85,20 +81,19 @@ namespace Cas27
         public void TestIsCartEmpty()
         {
             HomePage pomHomePage = new HomePage(this.driver);
-            LoginPage pomLoginPage = new LoginPage(this.driver);
 
             pomHomePage.GoToPage();
-            pomHomePage.linkLogin.Click();
 
-            Assert.IsTrue(pomLoginPage.labelPrijava.Displayed);
-            this.ExplicitWait(100);
+            LoginPage pomLoginPage = pomHomePage.ClickOnLogin();
 
-            pomLoginPage.inputUsername.SendKeys("aaa");
-            pomLoginPage.inputPassword.SendKeys("aaa");
-            pomLoginPage.buttonLogin.Click();
+            Assert.IsTrue(pomLoginPage.IsPageDisplayed());
+
+            pomLoginPage.EnterUsername("aaa");
+            pomLoginPage.EnterPassword("aaa");
+
+            pomHomePage = pomLoginPage.ClickOnLoginButton();
 
             Assert.IsTrue(pomHomePage.IsUserLoggedIn());
-
             Assert.IsTrue(pomHomePage.IsCartEmpty());
         }
 

@@ -8,7 +8,7 @@ namespace Cas27.PageObjects
     {
         public LoginPage(IWebDriver driver) : base(driver) { }
 
-        public IWebElement inputUsername
+        private IWebElement inputUsername
         {
             get
             {
@@ -16,7 +16,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement inputPassword
+        private IWebElement inputPassword
         {
             get
             {
@@ -24,7 +24,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement buttonLogin
+        private IWebElement buttonLogin
         {
             get
             {
@@ -32,12 +32,35 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement labelPrijava
+        private IWebElement labelPrijava
         {
             get
             {
                 return this.WaitForElementToBeVisible(By.XPath("//h2[text()='Prijava']"));
             }
+        }
+
+        public bool IsPageDisplayed()
+        {
+            return this.labelPrijava.Displayed;
+        }
+
+        public void EnterUsername(string Username)
+        {
+            this.inputUsername.SendKeys(Username);
+        }
+
+        public void EnterPassword(string Password)
+        {
+            this.inputPassword.SendKeys(Password);
+        }
+
+        public HomePage ClickOnLoginButton()
+        {
+            this.buttonLogin.Click();
+            this.WaitForElementToBeVisible(By.XPath("//h2[contains(text(), 'Welcome back')]"));
+            this.ExplicitWait(250);
+            return new HomePage(this.driver);
         }
     }
 }

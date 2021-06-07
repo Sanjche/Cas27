@@ -8,7 +8,7 @@ namespace Cas27.PageObjects
     {
         public RegisterPage(IWebDriver driver) : base(driver) { }
 
-        public IWebElement inputFirstName
+        private IWebElement inputFirstName
         {
             get
             {
@@ -16,7 +16,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement inputLastName
+        private IWebElement inputLastName
         {
             get
             {
@@ -24,7 +24,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement inputEmail
+        private IWebElement inputEmail
         {
             get
             {
@@ -32,7 +32,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement inputUsername
+        private IWebElement inputUsername
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement inputPassword
+        private IWebElement inputPassword
         {
             get
             {
@@ -48,7 +48,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement inputPasswordRepeat
+        private IWebElement inputPasswordRepeat
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Cas27.PageObjects
             }
         }
 
-        public IWebElement buttonRegister
+        private IWebElement buttonRegister
         {
             get
             {
@@ -67,6 +67,38 @@ namespace Cas27.PageObjects
         public void EnterFirstName(string FirstName)
         {
             this.inputFirstName.SendKeys(FirstName);
+        }
+
+        public void EnterLastName(string LastName)
+        {
+            this.inputLastName.SendKeys(LastName);
+        }
+
+        public void EnterUsername(string Username)
+        {
+            this.inputUsername.SendKeys(Username);
+        }
+
+        public void EnterEmail(string Email)
+        {
+            this.inputEmail.SendKeys(Email);
+        }
+
+        public void EnterPassword(string Password)
+        {
+            this.inputPassword.SendKeys(Password);
+        }
+
+        public void EnterPasswordAgain(string PasswordAgain)
+        {
+            this.inputPasswordRepeat.SendKeys(PasswordAgain);
+        }
+
+        public HomePage ClickOnRegisterButton()
+        {
+            this.buttonRegister.Click();
+            this.ExplicitWait(250);
+            return new HomePage(this.driver);
         }
 
     }
